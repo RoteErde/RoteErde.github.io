@@ -12,8 +12,11 @@ Setting up the macvlan network would be as straightforward as configuring the se
 
 then setting up two containers to test it:
 
+
 `docker run -it --net=macnet --ip=192.168.1.10 --rm joffotron/docker-net-tools`
+
 `docker run -it --net=macnet --ip=192.168.1.11 --rm joffotron/docker-net-tools`
+
 
 Both containers would be able to ping each other, this works well enough in a normal machine.
 
