@@ -1,37 +1,19 @@
-## Welcome to GitHub Pages
+## Using Docker Macvlan in Virtualbox
 
-You can use the [editor on GitHub](https://github.com/RoteErde/RoteErde.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Suppose you need to get your containers exposed directly to the network via macvlan, and you have a network with the settings:
+`192.168.1.0/24` and a gateway of `192.168.1.1`, with a host interface of `enp0s3`
 
-### Markdown
+setting up the macvlan network would be as straightforward as configuring the setup with the parent interface:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+`docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.1 -o parent=enp0s3 macvlan`
+then setting up two containers to test it:
+`docker run -it --net=macnet --ip=192.168.1.10 --rm joffotron/docker-net-tools`
+`docker run -it --net=macnet --ip=192.168.1.11 --rm joffotron/docker-net-tools`
 
-```markdown
-Syntax highlighted code block
+Both containers would be able to ping each other, this works well enough in a normal machine.
 
-# Header 1
-## Header 2
-### Header 3
+However in Virtualbox the containers wouldn't be able to ping each other with the default network emulation.
 
-- Bulleted
-- List
+You'll need to change the settings on the Adapter type to **PC-net-FAST III** to allow the containers to work.
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/RoteErde/RoteErde.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
